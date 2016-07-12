@@ -48,7 +48,7 @@ def sync(distro):
                      '--links', '--hardlinks', '--delete', 
                      '--delete-excluded', '--delete-after', 
                      '--delay-updates', '--safe-links', '-v', 
-                     syncurl, synchome] 
+                     syncurl, synchome], 
                    stdout=distro_log)
             
         if ret == 0:
