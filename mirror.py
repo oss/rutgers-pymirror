@@ -52,10 +52,10 @@ def sync(distro):
                    stdout=distro_log)
             
         if ret == 0:
-            print "{} sync successfully completed at {}".format(distro, 
+            print "{0} sync successfully completed at {1}".format(distro, 
                 datetime.now().strftime(datetime_format))
         else:
-            print "{} sync failed at {} with returncode {}".format(
+            print "{0} sync failed at {1} with returncode {2}".format(
                 distro, datetime.now.strftime(datetime_format), ret)
 
 
