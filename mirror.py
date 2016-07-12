@@ -45,7 +45,7 @@ def sync(distro):
             
     with open(synclog, 'a+') as distro_log:
         ret = call( ['rsync', '--recursive', '--safe-links', '--times', 
-                     '--links', '--hardlinks', '--delete', 
+                     '--links', '--hard-links', '--delete', 
                      '--delete-excluded', '--delete-after', 
                      '--delay-updates', '--safe-links', '-v', 
                      syncurl, synchome], 
