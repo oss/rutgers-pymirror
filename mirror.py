@@ -40,7 +40,7 @@ def sync(distro):
     synchome = CONFIG.get(distro, 'synchome')
     synclog = CONFIG.get(distro, 'synclog')
 
-    print "Starting {} sync at {}".format(distro, 
+    print "Starting {0} sync at {1}".format(distro, 
         datetime.now().strftime(datetime_format))
             
     with open(synclog, 'a+') as distro_log:
