@@ -56,7 +56,7 @@ def sync(distro):
                 datetime.now().strftime(datetime_format))
         else:
             print "{0} sync failed at {1} with returncode {2}".format(
-                distro, datetime.now.strftime(datetime_format), ret)
+                distro, datetime.now().strftime(datetime_format), ret)
 
 
 if __name__ == "__main__":
