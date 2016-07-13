@@ -42,7 +42,7 @@ def lock(file):
         return False
     else:
         with open(file, "w") as fh:
-            h.write(str(getpid()))
+            fh.write(str(getpid()))
         return True
 
 
