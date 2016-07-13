@@ -10,7 +10,7 @@ from os import getpid, remove
 import logging
 
 
-CONFIG_PATH = "rutgers-pymirror.cfg"
+CONFIG_PATH = "/etc/rutgers-pymirror.cfg"
 CONFIG = None
 
 
