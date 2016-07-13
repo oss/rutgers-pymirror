@@ -44,6 +44,9 @@ def sync(distro):
         datetime.now().strftime(datetime_format))
             
     with open(synclog, 'a+') as distro_log:
+        distro_log.write("rsync started on {0}".format(
+            datetime.now().strftime(datetime_format)))
+        
         ret = call( ['rsync', '--recursive', '--safe-links', '--times', 
                      '--links', '--hard-links', '--delete', 
                      '--delete-excluded', '--delete-after', 
@@ -54,9 +57,17 @@ def sync(distro):
         if ret == 0:
             print "{0} sync successfully completed at {1}".format(distro, 
                 datetime.now().strftime(datetime_format))
+            distro_log.write("rsync successfully completed at {0}".format(
+                datetime.now().strftime(datetime_format)))
         else:
             print "{0} sync failed at {1} with returncode {2}".format(
                 distro, datetime.now().strftime(datetime_format), ret)
+            distro_log.write(
+                "rsync unsuccessfully ended at {0} with return code {1}".format(
+                    datetime.now().strftime(datetime_format), ret))
+        
+        # Create some spacing between syncs
+        distro_log.write("\n\n")
 
 
 if __name__ == "__main__":
