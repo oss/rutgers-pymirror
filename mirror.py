@@ -29,8 +29,8 @@ def main(options, args):
         loglevel = logging.WARNING
 
     logging.basicConfig(filename=CONFIG.get('settings', 'mainlog'), 
-        format=CONFIG.get('settings', 'logformat'), 
-        datefmt=CONFIG.get('settings', 'datetimeformat'), level=loglevel)
+        datefmt=CONFIG.get('settings', 'datetimeformat'), 
+        format="[%(asctime)s] %(levelname)s: %(message)s", level=loglevel)
  
     distros = list(CONFIG.sections())
     distros.remove('settings')
