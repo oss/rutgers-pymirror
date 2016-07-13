@@ -6,6 +6,7 @@ from ConfigParser import ConfigParser
 from datetime import datetime
 from subprocess import call
 from os.path import isfile
+from os import getpid, remove
 
 def _get_config(file):
     if not isfile(file):
@@ -15,7 +16,9 @@ def _get_config(file):
     parser.read(file)
     return parser
 
+
 CONFIG = _get_config("rutgers-pymirror.cfg")
+
 
 def main(options, args):
     distros = list(CONFIG.sections())
@@ -32,13 +35,33 @@ def main(options, args):
     else:
         for distro in args:
             sync(distro)
-   
+
+
+def lock(file):
+    if isfile(file):
+        return False
+    else:
+        with open(file, "w") as fh:
+            h.write(str(getpid()))
+        return True
+
+
+def unlock(file):
+    if isfile(file):
+        remove(file)
+
 
 def sync(distro): 
     datetime_format = CONFIG.get('settings', 'datetimeformat')
     syncurl = CONFIG.get(distro, 'url')
     synchome = CONFIG.get(distro, 'synchome')
     synclog = CONFIG.get(distro, 'synclog')
+    synclock = CONFIG.get(distro, 'synclock')
+
+    if not lock(synclock):
+        print "Could not begin {0} sync: lock file exists. Skipping...".format(
+            distro)
+        return
 
     print "Starting {0} sync at {1}".format(distro, 
         datetime.now().strftime(datetime_format))
@@ -68,6 +91,8 @@ def sync(distro):
         
         # Create some spacing between syncs
         distro_log.write("\n\n")
+
+    unlock(synclock)
 
 
 if __name__ == "__main__":
