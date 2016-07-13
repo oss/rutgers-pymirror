@@ -10,16 +10,17 @@ from os import getpid, remove
 import logging
 
 
-def _get_config(file):
+CONFIG_PATH = "rutgers-pymirror.cfg"
+CONFIG = None
+
+
+def load_config(file):
     if not isfile(file):
         raise Exception('config file not found')
 
     parser = ConfigParser()
     parser.read(file)
     return parser
-
-
-CONFIG = _get_config("rutgers-pymirror.cfg")
 
 
 def initialize_logger(console_log_level):
@@ -39,6 +40,9 @@ def initialize_logger(console_log_level):
 
 
 def main(options, args):
+    global CONFIG
+    CONFIG = load_config(CONFIG_PATH)
+    
     # We log everything to the log file, but only certain things to the console
     if options.verbose:
         console_log_level = logging.DEBUG
