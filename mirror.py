@@ -3,7 +3,7 @@
 from optparse import OptionParser
 import sys
 from ConfigParser import ConfigParser
-from datetime import datetime
+from datetime import datetime, timedelta
 from subprocess import call
 from os.path import isfile
 from os import getpid, remove
@@ -125,6 +125,8 @@ def sync(distro):
             logging.info("%s sync successfully completed", distro)
             distro_log.write("rsync successfully completed at {0}".format(
                 datetime.now().strftime(datetime_format)))
+            CONFIG.set(distro, 'lastsync', 
+                datetime.now().strftime(datetime_format))
         else:
             logging.warning("%s sync failed with returncode %s", distro, ret)
             distro_log.write(
@@ -135,6 +137,22 @@ def sync(distro):
         distro_log.write("\n\n")
 
     unlock(synclock)
+
+
+def check(distros, hours):
+    out_of_sync = []
+    dateformat = CONFIG.get('settings', 'datetimeformat')
+
+    for distro in distros:
+        lastsync = datetime.strptime(CONFIG.get(distro, 'lastsync'), 
+            dateformat)
+        if lastsync + timedelta(hours=hours) < datetime.now():
+            print lastsync
+            print lastsync + timedelta(hours=hours)
+            print datetime.now()
+            out_of_sync.append(distro)
+
+    return out_of_sync
 
 
 if __name__ == "__main__":
