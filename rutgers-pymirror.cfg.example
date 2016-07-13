@@ -2,11 +2,10 @@
 mainlog        = /var/log/rutgers-pymirror/main.log
 datetimeformat = %b %m %Y %H:%M:%S
 
-# You can sync a specific arch repo (core, extra, testing, community, iso)
-# by appending the repo name to the rsync url. Here we are syncing a complete
-# mirror of all repos.
-[archlinux]
-url      = rsync://rsync.localmsp.org/arch/
-synchome = /limbus/centos/archlinux
-synclog  = /var/log/rutgers-pymirror/archlinux.log
-synclock = /var/lock/rutgers-pymirror/archlinux
+# Example:
+#[archlinux]
+#url      = rsync://rsync.localmsp.org/arch/
+#synchome = /limbus/centos/archlinux
+#synclog  = /var/log/rutgers-pymirror/archlinux.log
+#synclock = /var/lock/rutgers-pymirror/archlinux
+#lastsync = Jan 01 2000 00:00:00

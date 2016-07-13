@@ -147,9 +147,6 @@ def check(distros, hours):
         lastsync = datetime.strptime(CONFIG.get(distro, 'lastsync'), 
             dateformat)
         if lastsync + timedelta(hours=hours) < datetime.now():
-            print lastsync
-            print lastsync + timedelta(hours=hours)
-            print datetime.now()
             out_of_sync.append(distro)
 
     return out_of_sync
