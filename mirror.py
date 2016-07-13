@@ -7,6 +7,8 @@ from datetime import datetime
 from subprocess import call
 from os.path import isfile
 from os import getpid, remove
+import logging
+
 
 def _get_config(file):
     if not isfile(file):
@@ -21,6 +23,15 @@ CONFIG = _get_config("rutgers-pymirror.cfg")
 
 
 def main(options, args):
+    if options.verbose:
+        loglevel = logging.DEBUG
+    else:
+        loglevel = logging.WARNING
+
+    logging.basicConfig(filename=CONFIG.get('settings', 'mainlog'), 
+        format=CONFIG.get('settings', 'logformat'), 
+        datefmt=CONFIG.get('settings', 'datetimeformat'), level=loglevel)
+ 
     distros = list(CONFIG.sections())
     distros.remove('settings')
 
@@ -31,7 +42,7 @@ def main(options, args):
         for distro in distros:
             sync(distro)
     elif len(distros) == 0:
-        print "no distros to sync"
+        logging.info("nothing to do")
     else:
         for distro in args:
             sync(distro)
@@ -59,12 +70,11 @@ def sync(distro):
     synclock = CONFIG.get(distro, 'synclock')
 
     if not lock(synclock):
-        print "Could not begin {0} sync: lock file exists. Skipping...".format(
-            distro)
+        logging.warning("Could not begin %s sync: lock file exists.", distro)
+        logging.warning("Skipping...")
         return
 
-    print "Starting {0} sync at {1}".format(distro, 
-        datetime.now().strftime(datetime_format))
+    logging.info("Starting %s sync", distro) 
             
     with open(synclog, 'a+') as distro_log:
         distro_log.write("rsync started on {0}".format(
@@ -78,13 +88,11 @@ def sync(distro):
                    stdout=distro_log)
             
         if ret == 0:
-            print "{0} sync successfully completed at {1}".format(distro, 
-                datetime.now().strftime(datetime_format))
+            logging.info("%s sync successfully completed", distro)
             distro_log.write("rsync successfully completed at {0}".format(
                 datetime.now().strftime(datetime_format)))
         else:
-            print "{0} sync failed at {1} with returncode {2}".format(
-                distro, datetime.now().strftime(datetime_format), ret)
+            logging.warning("%s sync failed with returncode %s", distro, ret)
             distro_log.write(
                 "rsync unsuccessfully ended at {0} with return code {1}".format(
                     datetime.now().strftime(datetime_format), ret))

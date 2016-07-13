@@ -1,6 +1,7 @@
 [settings]
 mainlog        = /var/log/rutgers-pymirror/main.log
 datetimeformat = %b %m %Y %H:%M:%S
+logformat      = [%(asctime)s] %(levelname)s: %(message)s
 
 # You can sync a specific arch repo (core, extra, testing, community, iso)
 # by appending the repo name to the rsync url. Here we are syncing a complete
