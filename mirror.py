@@ -22,16 +22,30 @@ def _get_config(file):
 CONFIG = _get_config("rutgers-pymirror.cfg")
 
 
-def main(options, args):
-    if options.verbose:
-        loglevel = logging.DEBUG
-    else:
-        loglevel = logging.WARNING
-
+def initialize_logger(console_log_level):
+    logformat = "[%(asctime)s] %(levelname)s: %(message)s"
+    dateformat = CONFIG.get('settings', 'datetimeformat')
+    
+    # Log everything to the log file
     logging.basicConfig(filename=CONFIG.get('settings', 'mainlog'), 
-        datefmt=CONFIG.get('settings', 'datetimeformat'), 
-        format="[%(asctime)s] %(levelname)s: %(message)s", level=loglevel)
- 
+        datefmt=dateformat, format=logformat, level=logging.DEBUG)
+
+    # Only log warnings and critical errors to the console
+    ch = logging.StreamHandler()
+    ch.setLevel(console_log_level)
+    formatter = logging.Formatter(fmt=logformat, datefmt=dateformat)
+    ch.setFormatter(formatter)
+    logging.getLogger('').addHandler(ch)
+
+
+def main(options, args):
+    # We log everything to the log file, but only certain things to the console
+    if options.verbose:
+        console_log_level = logging.DEBUG
+    else:
+        console_log_level = logging.WARNING
+    initialize_logger(console_log_level)
+     
     distros = list(CONFIG.sections())
     distros.remove('settings')
 
