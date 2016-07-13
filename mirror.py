@@ -50,20 +50,36 @@ def main(options, args):
         console_log_level = logging.WARNING
     initialize_logger(console_log_level)
      
-    distros = list(CONFIG.sections())
-    distros.remove('settings')
+    all_distros = CONFIG.sections()
+    all_distros.remove('settings')
 
-    if options.list:
+    # Which distros are we syncing?
+    if options.all:
+        distros = all_distros
+    else:
+        distros = args
+        for distro in distros:
+            if distro not in all_distros:
+                print "unknown distro {0}".format(distro)
+                return
+    
+    if len(distros) == 0:
+        print "nothing to do"
+        return
+
+    if options.action == "sync":
+        for distro in distros:
+            sync(distro)
+    elif options.action == "list":
         for distro in distros:
             print distro
-    elif options.all:
-        for distro in distros:
-            sync(distro)
-    elif len(distros) == 0:
-        logging.info("nothing to do")
-    else:
-        for distro in args:
-            sync(distro)
+    elif options.action == "check":
+        out_of_date = check(distros, options.hours)
+        if len(out_of_date) != 0:
+            print "The following are out of date by at least {0} hours:".format(
+                options.hours)
+            for distro in out_of_date:
+                print distro
 
 
 def lock(file):
@@ -123,10 +139,18 @@ def sync(distro):
 
 if __name__ == "__main__":
     parser = OptionParser(usage="Usage: %prog [options] distro1 distro2 ...")
-    parser.add_option("-l", "--list", action="store_true", default=False,
-                      help="list all possible values for 'distro'")
+    parser.add_option("--action", choices=["sync", "list", "check"], 
+                      default="sync",
+                      help="action to take: sync, list, or check. sync "
+                      "(default): sync the distro with rsync. list: display a "
+                      "list of all repos defined in the config file. check: "
+                      "display a list of all repos out of date")
+    parser.add_option("--hours", type="int", default=24,
+                      help="the number of hours (default: 24) since the last "
+                      "sync to be considered out of date; only used with "
+                      "--action=check")
     parser.add_option("-a", "--all", action="store_true", default=False,
-                      help="sync all distros")
+                      help="perform action on all distros")
     parser.add_option("-v", "--verbose", action="store_true", default=False,
                       help="display all output")
     
