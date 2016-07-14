@@ -147,8 +147,7 @@ def sync(distro):
             update_last_sync(distro)
         else:
             logging.warning("%s sync failed with returncode %s", distro, ret)
-            distro_log.write("rsync unsuccessfully ended at {0} with return " +
-                "code {1}".format(datetime.now().strftime(datetime_format),ret))
+            distro_log.write("rsync unsuccessfully ended at {0} with returncode {1}\n".format(datetime.now().strftime(datetime_format),ret))
         
         # Create some spacing between syncs
         distro_log.write("\n\n")
