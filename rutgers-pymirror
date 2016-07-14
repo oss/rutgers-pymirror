@@ -104,8 +104,8 @@ def update_last_sync(distro):
     if isfile(lastsync_file):
         lastsync_data.read(lastsync_file)
     
-    if distro not in CONFIG.sections():
-        CONFIG.add_section(distro)
+    if distro not in lastsync_data.sections():
+        lastsync_data.add_section(distro)
     
     lastsync_data.set(distro, 'lastsync', 
         datetime.now().strftime(datetime_format))
