@@ -53,33 +53,34 @@ def main(options, args):
     all_distros = CONFIG.sections()
     all_distros.remove('settings')
 
-    # Which distros are we syncing?
-    if options.all:
-        distros = all_distros
-    else:
-        distros = args
-        for distro in distros:
-            if distro not in all_distros:
-                print "unknown distro {0}".format(distro)
-                return
-    
-    if len(distros) == 0:
-        print "nothing to do"
-        return
-
-    if options.action == "sync":
-        for distro in distros:
-            sync(distro)
-    elif options.action == "list":
+    if options.action == "list":
         for distro in all_distros:
             print distro
-    elif options.action == "check":
-        out_of_date = check(distros, options.hours)
-        if len(out_of_date) != 0:
-            print "The following are out of date by at least {0} hours:".format(
-                options.hours)
-            for distro in out_of_date:
-                print distro
+    else:
+        # Which distros are we syncing/checking?
+        if options.all:
+            distros = all_distros
+        else:
+            distros = args
+            for distro in distros:
+                if distro not in all_distros:
+                    print "unknown distro {0}".format(distro)
+                    return
+    
+        if len(distros) == 0:
+            print "nothing to do"
+            return
+
+        if options.action == "sync":
+            for distro in distros:
+                sync(distro)
+        elif options.action == "check":
+            out_of_date = check(distros, options.hours)
+            if len(out_of_date) != 0:
+                print "The following are out of date by at least {0} " +
+                    "hours:".format(options.hours)
+                for distro in out_of_date:
+                    print distro
 
 
 def lock(file):
