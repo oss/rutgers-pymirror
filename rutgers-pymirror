@@ -71,7 +71,7 @@ def main(options, args):
         for distro in distros:
             sync(distro)
     elif options.action == "list":
-        for distro in distros:
+        for distro in all_distros:
             print distro
     elif options.action == "check":
         out_of_date = check(distros, options.hours)
