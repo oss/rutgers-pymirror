@@ -2,7 +2,7 @@
 
 from optparse import OptionParser
 import sys
-from ConfigParser import ConfigParser
+from ConfigParser import ConfigParser, NoSectionError
 from datetime import datetime, timedelta
 from subprocess import call
 from os.path import isfile
@@ -153,12 +153,20 @@ def sync(distro):
 
 def check(distros, hours):
     out_of_sync = []
+    
+    timestamp_file = CONFIG.get('settings', 'lastsyncfile')
+    timestamps = ConfigParser()
+    timestamps.read(timestamp_file)
+    
     dateformat = CONFIG.get('settings', 'datetimeformat')
 
     for distro in distros:
-        lastsync = datetime.strptime(CONFIG.get(distro, 'lastsync'), 
-            dateformat)
-        if lastsync + timedelta(hours=hours) < datetime.now():
+        try:
+            lastsync = datetime.strptime(timestamps.get(distro, 'lastsync'), 
+                dateformat)
+            if lastsync + timedelta(hours=hours) < datetime.now():
+                out_of_sync.append(distro)
+        except NoSectionError:
             out_of_sync.append(distro)
 
     return out_of_sync
