@@ -97,6 +97,7 @@ def unlock(file):
         remove(file)
 
 def update_last_sync(distro):
+    datetime_format = CONFIG.get('settings', 'datetimeformat')
     lastsync_file = CONFIG.get('settings', 'lastsyncfile')
     lastsync_data = ConfigParser()
     
