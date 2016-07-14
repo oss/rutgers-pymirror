@@ -1,6 +1,6 @@
 [settings]
 mainlog        = /var/log/rutgers-pymirror/main.log
-datetimeformat = %b %m %Y %H:%M:%S
+datetimeformat = %b %d %Y %H:%M:%S
 
 # Example:
 #[archlinux]
