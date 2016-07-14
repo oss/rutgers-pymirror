@@ -1,5 +1,6 @@
 [settings]
 mainlog        = /var/log/rutgers-pymirror/main.log
+lastsyncfile   = /var/log/rutgers-pymirror/timestamps.cfg
 datetimeformat = %b %d %Y %H:%M:%S
 
 # Example:
@@ -8,4 +9,3 @@ datetimeformat = %b %d %Y %H:%M:%S
 #synchome = /limbus/centos/archlinux
 #synclog  = /var/log/rutgers-pymirror/archlinux.log
 #synclock = /var/lock/rutgers-pymirror/archlinux
-#lastsync = Jan 01 2000 00:00:00

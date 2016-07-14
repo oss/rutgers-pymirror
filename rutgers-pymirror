@@ -95,6 +95,20 @@ def unlock(file):
     if isfile(file):
         remove(file)
 
+def update_last_sync(distro):
+    lastsync_file = CONFIG.get('settings', 'lastsyncfile')
+    lastsync_data = ConfigParser()
+    
+    if isfile(lastsync_file):
+        lastsync_data.read(lastsync_file)
+    
+    lastsync_data.set(distro, 'lastsync', 
+        datetime.now().strftime(datetime_format))
+    
+    # Flush changes to file
+    with open(lastsync_file, 'w') as file:
+        lastsync_data.write(file)
+
 
 def sync(distro): 
     datetime_format = CONFIG.get('settings', 'datetimeformat')
@@ -123,18 +137,13 @@ def sync(distro):
             
         if ret == 0:
             logging.info("%s sync successfully completed", distro)
-            distro_log.write("rsync successfully completed at {0}".format(
+            distro_log.write("rsync successfully completed at {0}\n".format(
                 datetime.now().strftime(datetime_format)))
-            # Update the lastsync time in the config file
-            CONFIG.set(distro, 'lastsync', 
-                datetime.now().strftime(datetime_format))
-            with open(CONFIG_PATH, 'w') as file:
-                config.write(file)
+            update_last_sync(distro)
         else:
             logging.warning("%s sync failed with returncode %s", distro, ret)
-            distro_log.write(
-                "rsync unsuccessfully ended at {0} with return code {1}".format(
-                    datetime.now().strftime(datetime_format), ret))
+            distro_log.write("rsync unsuccessfully ended at {0} with return " +
+                "code {1}".format(datetime.now().strftime(datetime_format),ret))
         
         # Create some spacing between syncs
         distro_log.write("\n\n")
