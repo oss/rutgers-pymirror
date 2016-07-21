@@ -77,8 +77,8 @@ def main(options, args):
         elif options.action == "check":
             out_of_date = check(distros, options.hours)
             if len(out_of_date) != 0:
-                print "The following are out of date by at least {0} " +
-                    "hours:".format(options.hours)
+                print "The following are out of date by at least " + \
+                    "{0} hours:".format(options.hours)
                 for distro in out_of_date:
                     print distro
 
