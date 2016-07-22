@@ -121,6 +121,7 @@ def sync(distro):
     synchome = CONFIG.get(distro, 'synchome')
     synclog = CONFIG.get(distro, 'synclog')
     synclock = CONFIG.get(distro, 'synclock')
+    rsyncoptions = CONFIG.get(distro, 'rsyncoptions')
 
     if not lock(synclock):
         logging.warning("Could not begin %s sync: lock file exists.", distro)
@@ -133,11 +134,7 @@ def sync(distro):
         distro_log.write("rsync started on {0}".format(
             datetime.now().strftime(datetime_format)))
         
-        ret = call( ['rsync', '--recursive', '--safe-links', '--times', 
-                     '--links', '--hard-links', '--delete', 
-                     '--delete-excluded', '--delete-after', 
-                     '--delay-updates', '--safe-links', '-v', 
-                     syncurl, synchome], 
+        ret = call( ['rsync'] + rsyncoptions + ['-v', syncurl, synchome], 
                    stdout=distro_log)
             
         if ret == 0:
